@@ -42,7 +42,7 @@ app.use('/api/v1/users', userRoutes);  // Prefix for user-related routes
 
 // Start the server
 const PORT = 8000 || process.env.PORT;
-app.listen(PORT, () => {
-    connectDB();
+app.listen(PORT, async () => {
+    await connectDB();
     console.log(`Server running at port ${PORT}`);
 });
