@@ -1,5 +1,4 @@
 import User from '../model/user.js';  
-import bcrypt from 'bcryptjs';  
 import jwt from 'jsonwebtoken';  
 
 // Register User
@@ -7,7 +6,7 @@ export const registerUser = async (req, res) => {
     try {
         console.log("register endpoint hit")
         const { fullname, email, phoneNumber, password } = req.body;
-        console.log(fullname, email, phoneNumber, password);
+        console.log(fullname)
 
         // Check for missing fields
         if (!fullname || !email || !phoneNumber || !password) {
@@ -16,43 +15,35 @@ export const registerUser = async (req, res) => {
                 success: false 
             });
         }
+
+        console.log("checkpoint1");
         
-        try {
-            // Check if the user already exists
-            const existingUser = await User.findOne({ email });
-            if (existingUser) {
-                return res.status(400).json({ 
-                    message: 'Email already registered', 
-                    success: false 
-                });
-            }
-
-            // Hash the password
-            const hashedPassword = await bcrypt.hash(password, 2);
-
-            // Create a new user
-            const newUser = await User.create({
-                fullname,
-                email,
-                phoneNumber,
-                password: hashedPassword
-            });
-
-            return res.status(201).json({ 
-                message: "Account created successfully", 
-                success: true,
-                user: newUser 
-            });
-        } catch (error){
-            console.log(error);
-            return res.status(500).json({ 
-                message: "Server error. Please try again later.", 
-                success: false, 
-                error: error.message 
+        // Check if the user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ 
+                message: 'Email already registered', 
+                success: false 
             });
         }
-
+        console.log("checkpoint2");
+        
+        // Create a new user
+        const newUser = await User.create({
+            fullname,
+            email,
+            phoneNumber,
+            password: password
+        });
+        console.log("checkpoint3");
+        
+        return res.status(201).json({ 
+            message: "Account created successfully", 
+            success: true,
+            user: newUser 
+        });
     } catch (error) {
+        console.log("checkpoint4");
         console.error("Error in registerUser:", error.message); // Log the error
         return res.status(500).json({ 
             message: "Server error. Please try again later.", 
