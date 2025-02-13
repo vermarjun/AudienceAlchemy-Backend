@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.use(cors());
 
 // Route
-app.get("/api/home", (req, res) => {
+app.get("/", (req, res) => {
     return res.status(200).json({
         message: "I am coming from backend",
         success: true
