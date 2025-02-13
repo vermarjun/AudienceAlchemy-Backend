@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken';
 // Register User
 export const registerUser = async (req, res) => {
     try {
-        console.log("register endpoint hit")
+        // console.log("register endpoint hit")
         const { fullname, email, phoneNumber, password } = req.body;
-        console.log(fullname)
+        // console.log(fullname)
 
         // Check for missing fields
         if (!fullname || !email || !phoneNumber || !password) {
@@ -16,18 +16,18 @@ export const registerUser = async (req, res) => {
             });
         }
 
-        console.log("checkpoint1");
+        // console.log("checkpoint1");
         
         // Check if the user already exists
         const existingUser = await User.findOne({email});
-        console.log(existingUser)
+        // console.log(existingUser)
         if (existingUser) {
             return res.status(400).json({ 
                 message: 'Email already registered', 
                 success: false 
             });
         }
-        console.log("checkpoint2");
+        // console.log("checkpoint2");
         
         // Create a new user
         const newUser = await User.create({
@@ -36,7 +36,7 @@ export const registerUser = async (req, res) => {
             phoneNumber,
             password: password
         });
-        console.log("checkpoint3");
+        // console.log("checkpoint3");
         
         return res.status(201).json({ 
             message: "Account created successfully", 
@@ -44,7 +44,7 @@ export const registerUser = async (req, res) => {
             user: newUser 
         });
     } catch (error) {
-        console.log("checkpoint4");
+        // console.log("checkpoint4");
         console.error("Error in registerUser:", error.message); // Log the error
         return res.status(500).json({ 
             message: "Server error. Please try again later.", 
