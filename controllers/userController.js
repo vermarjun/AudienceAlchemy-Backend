@@ -5,7 +5,9 @@ import jwt from 'jsonwebtoken';
 // Register User
 export const registerUser = async (req, res) => {
     try {
+        console.log("register endpoint hit")
         const { fullname, email, phoneNumber, password } = req.body;
+        console.log(fullname)
 
         // Check for missing fields
         if (!fullname || !email || !phoneNumber || !password) {
@@ -102,6 +104,7 @@ export const logoutUser = async (req, res) => {
     }
 };
 
+// Update Profile
 export const updateProfile = async (req, res) => {
     try {
         const { fullname, email, phoneNumber, bio, socialLinks, department, profilePhoto } = req.body;
@@ -137,6 +140,32 @@ export const updateProfile = async (req, res) => {
 
         // Save changes to the user document
         await user.save();
+
+        return res.status(200).json({
+            message: "Profile updated successfully",
+            user,
+            success: true
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Server error. Please try again later.",
+            success: false,
+            error: error.message
+        });
+    }
+};
+
+// View Profile
+export const viewProfile = async (req, res) => {
+    try {
+        const userId = req.userId; // Extracted from JWT middleware
+
+        // Ensure the user exists
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found", success: false });
+        }
 
         return res.status(200).json({
             message: "Profile updated successfully",

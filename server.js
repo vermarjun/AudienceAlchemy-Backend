@@ -31,6 +31,13 @@ app.get("/", (req, res) => {
     });
 });
 
+app.get("/api/home", (req, res) => {
+    return res.status(200).json({
+        message: "yes working",
+        success: true
+    });
+});
+
 app.use('/api/v1/users', userRoutes);  // Prefix for user-related routes
 
 // Start the server
