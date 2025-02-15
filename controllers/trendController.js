@@ -56,16 +56,14 @@ async function fetchYtTrending() {
 
 // fetch reddit trending topics
 async function fetchReddit() {
-    const CLIENT_ID = process.env.REDDIT_CLIENT_ID;
-    const CLIENT_SECRET = process.env.REDDIT_CLIENT_SECRET;
-    const USER_AGENT = "my_reddit_app";
-    
+    const USER_AGENT = "my_reddit_app"; // Reddit requires a unique User-Agent
     const INDIAN_SUBREDDITS = ["india"];
     const REDDIT_API_URL = `https://www.reddit.com/r/${INDIAN_SUBREDDITS.join("+")}/hot.json?limit=10`;
+
     try {
         const response = await axios.get(REDDIT_API_URL, {
             headers: {
-                "User-Agent": USER_AGENT,
+                "User-Agent": USER_AGENT, // Reddit requires a User-Agent header
             },
         });
 
