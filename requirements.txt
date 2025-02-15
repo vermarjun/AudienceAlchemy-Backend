@@ -1,3 +1,5 @@
 groq
 gtts
 langdetect
+google.generativeai
+praw
