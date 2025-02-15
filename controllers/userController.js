@@ -1,3 +1,4 @@
+import { useReducedMotion } from 'react-spring';
 import User from '../model/user.js';  
 import jwt from 'jsonwebtoken';  
 
@@ -69,8 +70,7 @@ export const login = async (req, res) => {
             return res.status(404).json({ message: 'User not found', success: false });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
+        if (user.password != password) {
             return res.status(400).json({ message: 'Incorrect email or password', success: false });
         }
 
