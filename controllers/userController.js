@@ -1,4 +1,3 @@
-import { useReducedMotion } from 'react-spring';
 import User from '../model/user.js';  
 import jwt from 'jsonwebtoken';  
 
