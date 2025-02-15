@@ -1,7 +1,7 @@
 import axios from "axios"
 import { analyzeAllComments } from "../PrespectiveAnalysis.js";
 
-async function fetchComments(videoId, maxResults = 20) {
+async function fetchComments(videoId, maxResults = 10) {
     const API_KEY = process.env.YT_API_KEY;
     let comments = [];
     let nextPageToken = null;
