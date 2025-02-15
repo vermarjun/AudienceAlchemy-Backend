@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import connectDB from "./utill/DataBase.js";
 import userRoutes from './Router/userRoute.js';
+import analyseRoutes from './Router/analyseRoute.js';
 import dotenv from "dotenv";
 
 dotenv.config({});
@@ -39,6 +40,8 @@ app.get("/api/home", (req, res) => {
 });
 
 app.use('/api/v1/users', userRoutes);  // Prefix for user-related routes
+
+app.use('/api/v1/analyse', analyseRoutes);
 
 // Start the server
 const PORT = 8000 || process.env.PORT;
