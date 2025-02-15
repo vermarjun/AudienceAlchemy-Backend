@@ -1,5 +1,6 @@
 import axios from "axios"
 import { analyzeAllComments } from "../PrespectiveAnalysis.js";
+import { main } from "./channelAnalysis.js";
 
 async function fetchComments(videoId, maxResults = 10) {
     const API_KEY = process.env.YT_API_KEY;
@@ -86,3 +87,10 @@ export const ytVideoAnalysis = async (req, res) => {
         });
     }
 };
+
+export const channelAnalysis = async (req, res) => {
+  const {username} = req.body;
+  const data = await main(username);
+  console.log(data)
+  return res.status(200).json({data:data})
+}
