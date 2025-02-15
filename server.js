@@ -5,6 +5,7 @@ import connectDB from "./util/DataBase.js";
 import userRoutes from './Router/userRoute.js';
 import analyseRoutes from './Router/analyseRoute.js';
 import chatBotRoutes from "./Router/chatBotRoute.js"
+import trendRoutes from "./Router/trendRoutes.js"
 import dotenv from "dotenv";
 
 dotenv.config({});
@@ -16,13 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// const corsOptions = {
-//     origin: 'http://localhost:5173',
-//     methods: 'GET,POST,PUT,DELETE',
-//     allowedHeaders: 'Content-Type,Authorization',
-//     credentials: true                
-// };
-// app.use(cors(corsOptions));
+// Cors
 app.use(cors());
 
 // Route
@@ -45,6 +40,8 @@ app.use('/api/v1/users', userRoutes);  // Prefix for user-related routes
 app.use('/api/v1/analyse', analyseRoutes);
 
 app.use('/api/v1/chatbot', chatBotRoutes);
+
+app.use('/api/v1/trendAnalysis', trendRoutes);
 
 // Start the server
 const PORT = 8000 || process.env.PORT;
