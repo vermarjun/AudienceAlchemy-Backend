@@ -1,5 +1,4 @@
 import User from '../model/user.js';  
-import jwt from 'jsonwebtoken';  
 
 // Register User
 export const registerUser = async (req, res) => {
@@ -73,15 +72,7 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: 'Incorrect email or password', success: false });
         }
 
-        const tokenData = { userId: user._id };
-        const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: '1d' });
-
-        res.cookie('token', token, {
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000, // 1 day
-            sameSite: 'strict',
-            secure: process.env.NODE_ENV === 'production'
-        }).status(200).json({ message: `Welcome back ${user.fullname}`, user, success: true });
+        res.status(200).json({ message: `Welcome back ${user.fullname}`, user, success: true });
 
     } catch (error) {
         console.error("Login error:", error); // Log the error for debugging
@@ -109,7 +100,7 @@ export const logoutUser = async (req, res) => {
 export const updateProfile = async (req, res) => {
     try {
         const { fullname, email, phoneNumber, bio, socialLinks, department, profilePhoto } = req.body;
-        const userId = req.userId; // Extracted from JWT middleware
+        const userId = req.body.userId;
 
         // Ensure the user exists
         const user = await User.findById(userId);
@@ -159,7 +150,7 @@ export const updateProfile = async (req, res) => {
 // View Profile
 export const viewProfile = async (req, res) => {
     try {
-        const userId = req.userId; // Extracted from JWT middleware
+        const userId = req.body.userId;
 
         // Ensure the user exists
         const user = await User.findById(userId);
@@ -169,7 +160,7 @@ export const viewProfile = async (req, res) => {
         }
 
         return res.status(200).json({
-            message: "Profile updated successfully",
+            message: "Profile view",
             user,
             success: true
         });
