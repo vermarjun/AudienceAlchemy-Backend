@@ -41,10 +41,10 @@ export const chatbot = async (req, res) => {
     const message = req.body.message.text;
     const language = req.body.language.name;
 
-    console.log(message, " ", language)
+    // console.log(message, " ", language)
     try {
         const botAns = await getBotResponse(message, language);
-        console.log(botAns);
+        // console.log(botAns);
         return res.status(201).json({ 
             message: botAns, 
             success: true,
