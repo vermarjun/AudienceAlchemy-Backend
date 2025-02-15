@@ -21,13 +21,13 @@ const __dirname = dirname(__filename);
 const API_KEY = process.env.YT_API_KEY;
 
 // fetch yt trending videos
-async function fetchYtTrending(){
+async function fetchYtTrending() {
     try {
         const params = {
             part: "snippet,statistics",
             chart: "mostPopular", // Fetch trending videos
             regionCode: "IN", // Change to desired country (e.g., "US" for the USA)
-            maxResults: 10, // Get top 6 videos
+            maxResults: 10, // Get top 10 videos
             key: API_KEY
         };
 
@@ -42,7 +42,9 @@ async function fetchYtTrending(){
         const videoList = data.items.map(video => ({
             views: video.statistics.viewCount || "N/A",
             thumbnail: video.snippet.thumbnails.high.url,
-            source: "yt"
+            source: "yt",
+            title: video.snippet.title || "N/A", // Add title
+            caption: video.snippet.description || "N/A" // Add caption (description)
         }));
 
         return videoList;
