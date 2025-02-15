@@ -55,7 +55,7 @@ async function fetchYtTrending(){
 // fetch reddit trending topics
 async function fetchReddit() {
     const CLIENT_ID = process.env.REDDIT_CLIENT_ID;
-    const CLIENT_SECRET = process.env.CLIENT_ID;
+    const CLIENT_SECRET = process.env.REDDIT_CLIENT_SECRET;
     const USER_AGENT = "my_reddit_app";
     
     const INDIAN_SUBREDDITS = ["india"];
