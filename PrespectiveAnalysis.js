@@ -6,7 +6,7 @@ dotenv.config({});
 const API_KEY = process.env.PRESPECTIVE_API_KEY;
 const API_URL = process.env.PRESPECTIVE_API_URL + API_KEY;
 
-async function analyzeComment(text) {
+export async function analyzeComment(text) {
     try {
         const response = await axios.post(API_URL, {
             comment: { text },
@@ -19,7 +19,6 @@ async function analyzeComment(text) {
                 PROFANITY: {}
             }
         });
-
         return response.data.attributeScores;
     } catch (error) {
         console.error("Error analyzing comment:", error.response?.data || error.message);

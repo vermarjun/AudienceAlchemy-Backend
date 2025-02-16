@@ -1,5 +1,5 @@
 import axios from "axios"
-import { analyzeAllComments } from "../PrespectiveAnalysis.js";
+import { analyzeAllComments, analyzeComment } from "../PrespectiveAnalysis.js";
 import { main } from "./channelAnalysis.js";
 
 async function fetchComments(videoId, maxResults = 10) {
@@ -90,7 +90,20 @@ export const ytVideoAnalysis = async (req, res) => {
 
 export const channelAnalysis = async (req, res) => {
   const {username} = req.body;
-  const data = await main(username);
-  console.log(data)
+  const data = JSON.parse(await main(username));
+  for (const video of data.videos) {
+    for (const comment of video.top_comments) {
+        try {
+            const result = await analyzeComment(comment.comment);
+            comment.toxicity = result.TOXICITY.summaryScore.value;
+            comment.profanity = result.PROFANITY.summaryScore.value;
+            comment.severe_toxicity = result.SEVERE_TOXICITY.summaryScore.value;
+            comment.insult = result.INSULT.summaryScore.value;
+            comment.threat = result.THREAT.summaryScore.value;
+        } catch (error) {
+            console.error("Error analyzing comment:", error);
+        }
+    }
+}
   return res.status(200).json({data:data})
 }

@@ -78,7 +78,7 @@ export async function main(username) {
         return null; // Return null if username is empty
     }
 
-    console.log(`Fetching data for channel: ${username}...`);
+    // console.log(`Fetching data for channel: ${username}...`);
     const channelId = await getChannelId(username);
     if (!channelId) {
         console.log("Channel not found.");
@@ -98,7 +98,7 @@ export async function main(username) {
     };
 
     for (let videoId of videoIds) {
-        console.log(`Fetching data for video: ${videoId}...`);
+        // console.log(`Fetching data for video: ${videoId}...`);
         const videoDetails = await getVideoDetails(videoId);
         const comments = await getComments(videoId);
 
