@@ -56,34 +56,49 @@ async function fetchYtTrending() {
 
 // fetch reddit trending topics
 async function fetchReddit() {
-    const USER_AGENT = "my_reddit_app"; // Reddit requires a unique User-Agent
-    const INDIAN_SUBREDDITS = ["india"];
-    const REDDIT_API_URL = `https://www.reddit.com/r/${INDIAN_SUBREDDITS.join("+")}/hot.json?limit=10`;
-
     try {
-        const response = await axios.get(REDDIT_API_URL, {
-            headers: {
-                "User-Agent": USER_AGENT, // Reddit requires a User-Agent header
-            },
-        });
-
-        const trendingTopics = response.data.data.children.map(post => ({
-            views: post.data.ups + post.data.num_comments, // Approximate views as upvotes + comments
-            source: "reddit",
-            thumbnail: post.data.thumbnail || null, // Thumbnail of the post, if available
-            title: post.data.title, // Title of the post
-            url: `https://www.reddit.com${post.data.permalink}`, // URL to the post
-            subreddit: post.data.subreddit // Subreddit where the post is from
+        const response = await axios.get('https://www.reddit.com/r/all/top.json?limit=10');
+        const posts = response.data.data.children.map(post => ({
+            title: post.data.title,
+            thumbnail: post.data.thumbnail,
+            upvotes: post.data.ups,
+            comments: post.data.num_comments,
+            url: post.data.url,
+            subreddit: post.data.subreddit
         }));
-
-        // Sort by views (most popular first)
-        trendingTopics.sort((a, b) => b.views - a.views);
-
-        return trendingTopics;
+        return posts;
     } catch (error) {
-        console.error("Error fetching data:", error.message);
+        console.error('Error fetching Reddit posts:', error);
         return [];
     }
+    // const USER_AGENT = "my_reddit_app"; // Reddit requires a unique User-Agent
+    // const INDIAN_SUBREDDITS = ["india"];
+    // const REDDIT_API_URL = `https://www.reddit.com/r/${INDIAN_SUBREDDITS.join("+")}/hot.json?limit=10`;
+
+    // try {
+    //     const response = await axios.get(REDDIT_API_URL, {
+    //         headers: {
+    //             "User-Agent": USER_AGENT, // Reddit requires a User-Agent header
+    //         },
+    //     });
+
+    //     const trendingTopics = response.data.data.children.map(post => ({
+    //         views: post.data.ups + post.data.num_comments, // Approximate views as upvotes + comments
+    //         source: "reddit",
+    //         thumbnail: post.data.thumbnail || null, // Thumbnail of the post, if available
+    //         title: post.data.title, // Title of the post
+    //         url: `https://www.reddit.com${post.data.permalink}`, // URL to the post
+    //         subreddit: post.data.subreddit // Subreddit where the post is from
+    //     }));
+
+    //     // Sort by views (most popular first)
+    //     trendingTopics.sort((a, b) => b.views - a.views);
+
+    //     return trendingTopics;
+    // } catch (error) {
+    //     console.error("Error fetching data:", error);
+    //     return [];
+    // }
 }
 
 // generate AI recommendations function
@@ -140,13 +155,13 @@ async function fetchAiRecommendations(text) {
 
 // fetch trending topics from yt, twitter, reddit
 export const fetchTrendingTopics = async (req, res) => {
-    console.log("fetchTredningTopicswashit");
+    // console.log("fetchTredningTopicswashit");
     const ytTopics = await fetchYtTrending();
-    console.log("ytTopicsFetched Successfully");
-    console.log("fetching reddit topics");
+    // console.log("ytTopicsFetched Successfully");
+    // console.log("fetching reddit topics");
     const redditTopics = await fetchReddit();
-    console.log("reddit topics fetched Successfully");
-    console.log(redditTopics)
+    // console.log("reddit topics fetched Successfully");
+    // console.log(redditTopics)
     res.status(200).json({
         ytTopics: ytTopics,
         redditTopics: redditTopics,
@@ -252,8 +267,8 @@ async function fetchVideoTranscripts(query) {
 async function fetchTrendingTopicsData( topic ) {
     const redditData = await fetchRedditData(topic);
     const ytTranscript = await fetchVideoTranscripts(topic);
-    console.log(redditData)
-    console.log(ytTranscript)
+    // console.log(redditData)
+    // console.log(ytTranscript)
     const data = [...(redditData.post_titles), ytTranscript];
     return data;
 }
