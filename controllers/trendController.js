@@ -4,6 +4,7 @@ import { dirname, join } from "path";
 import axios from "axios";
 import { google } from "googleapis";
 import pkg from "youtube-transcript";
+import {load} from 'cheerio'
 const { getTranscript } = pkg;
 
 const YT_API_KEY = process.env.YT_API_KEY;
@@ -137,6 +138,64 @@ async function fetchAiRecommendations(text) {
     });
 }
 
+async function fetchTwitter(){
+    const URL = "https://trends24.in/india/";
+
+    // Headers to simulate a real browser request
+    const HEADERS = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
+    };
+    try {
+        // Send GET request
+        const response = await axios.get(URL, { headers: HEADERS });
+
+        // Parse the HTML content
+        const $ = load(response.data);
+
+        // Find the main section containing trends
+        const trendSection = $("div.px-2.scroll-smooth.flex.gap-x-4.w-fit.pt-8");
+
+        if (!trendSection.length) {
+            return res.status(404).json({ error: "Trending section not found!" });
+        }
+
+        // Find the list container
+        const listContainer = trendSection.find("div.list-container");
+
+        if (!listContainer.length) {
+            return res.status(404).json({ error: "List container not found!" });
+        }
+
+        // Find the <ol> tag containing all trending items
+        const trendList = listContainer.find("ol.trend-card__list");
+
+        const trendingTopics = [];
+        
+        if (!trendList.length) {
+            return trendingTopics;
+        }
+
+        // Extract trending topics
+        trendList.find("li").each((index, li) => {
+            const trendName = $(li).find("span.trend-name").text().trim();
+            const trendLink = $(li).find("a").attr("href");
+
+            if (trendName && trendLink) {
+                trendingTopics.push({
+                    name: trendName,
+                    url: trendLink
+                });
+            }
+        });
+
+        // Return the trending topics as JSON
+        return trendingTopics;
+
+    } catch (error) {
+        console.error("Error fetching the webpage:", error);
+        return [];
+    }
+}
 
 // fetch trending topics from yt, twitter, reddit
 export const fetchTrendingTopics = async (req, res) => {
@@ -145,11 +204,13 @@ export const fetchTrendingTopics = async (req, res) => {
     // console.log("ytTopicsFetched Successfully");
     // console.log("fetching reddit topics");
     const redditTopics = await fetchReddit();
+    const twitterTopics = await fetchTwitter();
     // console.log("reddit topics fetched Successfully");
     // console.log(redditTopics)
     res.status(200).json({
         ytTopics: ytTopics,
         redditTopics: redditTopics,
+        twitterTopics: twitterTopics,
         success: true
     })
 };
