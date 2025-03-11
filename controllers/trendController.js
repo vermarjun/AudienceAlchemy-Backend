@@ -188,6 +188,8 @@ async function fetchTwitter(){
             }
         });
 
+        const top20TrendingTopics = trendingTopics.slice(0, 30);
+
         // Return the trending topics as JSON
         return trendingTopics;
 
