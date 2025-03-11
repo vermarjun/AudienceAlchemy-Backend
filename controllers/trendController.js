@@ -138,10 +138,15 @@ async function fetchAiRecommendations(text) {
 }
 
 
-// fetch trending topics from yt, twitter, insta, reddit
+// fetch trending topics from yt, twitter, reddit
 export const fetchTrendingTopics = async (req, res) => {
+    console.log("fetchTredningTopicswashit");
     const ytTopics = await fetchYtTrending();
+    console.log("ytTopicsFetched Successfully");
+    console.log("fetching reddit topics");
     const redditTopics = await fetchReddit();
+    console.log("reddit topics fetched Successfully");
+    console.log(redditTopics)
     res.status(200).json({
         ytTopics: ytTopics,
         redditTopics: redditTopics,
