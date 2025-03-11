@@ -56,49 +56,34 @@ async function fetchYtTrending() {
 
 // fetch reddit trending topics
 async function fetchReddit() {
+    const USER_AGENT = "MyRedditApp/1.0_by_vermarjun"; // Reddit requires a unique User-Agent
+    const INDIAN_SUBREDDITS = ["india"];
+    const REDDIT_API_URL = `https://www.reddit.com/r/${INDIAN_SUBREDDITS.join("+")}/hot.json?limit=10`;
+
     try {
-        const response = await axios.get('https://www.reddit.com/r/all/top.json?limit=10');
-        const posts = response.data.data.children.map(post => ({
-            title: post.data.title,
-            thumbnail: post.data.thumbnail,
-            upvotes: post.data.ups,
-            comments: post.data.num_comments,
-            url: post.data.url,
-            subreddit: post.data.subreddit
+        const response = await axios.get(REDDIT_API_URL, {
+            headers: {
+                "User-Agent": USER_AGENT, // Reddit requires a User-Agent header
+            },
+        });
+
+        const trendingTopics = response.data.data.children.map(post => ({
+            views: post.data.ups + post.data.num_comments, // Approximate views as upvotes + comments
+            source: "reddit",
+            thumbnail: post.data.thumbnail || null, // Thumbnail of the post, if available
+            title: post.data.title, // Title of the post
+            url: `https://www.reddit.com${post.data.permalink}`, // URL to the post
+            subreddit: post.data.subreddit // Subreddit where the post is from
         }));
-        return posts;
+
+        // Sort by views (most popular first)
+        trendingTopics.sort((a, b) => b.views - a.views);
+
+        return trendingTopics;
     } catch (error) {
-        console.error('Error fetching Reddit posts:', error);
+        console.error("Error fetching data:", error);
         return [];
     }
-    // const USER_AGENT = "my_reddit_app"; // Reddit requires a unique User-Agent
-    // const INDIAN_SUBREDDITS = ["india"];
-    // const REDDIT_API_URL = `https://www.reddit.com/r/${INDIAN_SUBREDDITS.join("+")}/hot.json?limit=10`;
-
-    // try {
-    //     const response = await axios.get(REDDIT_API_URL, {
-    //         headers: {
-    //             "User-Agent": USER_AGENT, // Reddit requires a User-Agent header
-    //         },
-    //     });
-
-    //     const trendingTopics = response.data.data.children.map(post => ({
-    //         views: post.data.ups + post.data.num_comments, // Approximate views as upvotes + comments
-    //         source: "reddit",
-    //         thumbnail: post.data.thumbnail || null, // Thumbnail of the post, if available
-    //         title: post.data.title, // Title of the post
-    //         url: `https://www.reddit.com${post.data.permalink}`, // URL to the post
-    //         subreddit: post.data.subreddit // Subreddit where the post is from
-    //     }));
-
-    //     // Sort by views (most popular first)
-    //     trendingTopics.sort((a, b) => b.views - a.views);
-
-    //     return trendingTopics;
-    // } catch (error) {
-    //     console.error("Error fetching data:", error);
-    //     return [];
-    // }
 }
 
 // generate AI recommendations function
